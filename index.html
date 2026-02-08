@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; default-src 'self' https:;">
+    <title>Minha Ferramenta LoL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="container">
+            <!-- Status de Conexão -->
+            <div id="status-container" class="status-box disconnected">
+                <div class="status-indicator"></div>
+                <span id="status-text">Procurando Cliente do LoL...</span>
+            </div>
+
+            <!-- Conteúdo das Abas -->
+            <div class="tab-content" style="margin-bottom: 70px;"> <!-- Espaço para menu flutuante -->
+
+                <!-- ABA 1: PERFIL -->
+                <div id="tab-profile" class="tab-pane active">
+                    <div id="profile-card" class="profile-card hidden">
+                        <img id="profile-cover" src="" class="profile-cover">
+                        <div class="profile-header">
+                            <div class="profile-icon-container">
+                                <img id="profile-icon" src="" alt="Icon" class="profile-icon">
+                                <div class="level-badge" id="summoner-level">--</div>
+                            </div>
+                            <div class="profile-info">
+                                <h1 id="summoner-name">Carregando...</h1>
+                                <p class="tagline">Pronto para jogar</p>
+                                <button id="btn-refresh-profile" class="premium-btn"
+                                    style="padding: 5px 10px; font-size: 0.7rem; margin-top: 5px;">🔄 Recarregar
+                                    Dados</button>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Essência Azul</span>
+                                <span class="stat-value" id="wallet-be">...</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-box" style="margin-top: 20px;">
+                            <div class="control-group">
+                                <label>Status Personalizado</label>
+                                <div class="input-row">
+                                    <input type="text" id="status-input" placeholder="Sua mensagem..."
+                                        class="premium-input">
+                                    <button id="btn-change-status" class="premium-btn">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 2: ÍCONES -->
+                <div id="tab-icons" class="tab-pane">
+                    <div class="feature-box">
+                        <h3>🔍 Pesquisar Ícones</h3>
+                        <div class="input-row">
+                            <input type="text" id="icon-search" placeholder="Ex: Poro, Penguin..."
+                                class="premium-input">
+                            <button id="btn-search-icon" class="premium-btn">Buscar</button>
+                        </div>
+                        <p style="font-size: 12px; color: #888; margin-top: 5px;">* Ícones não adquiridos podem não
+                            aparecer para outros jogadores.</p>
+                        <div id="icon-grid" class="icon-grid">
+                            <!-- Ícones aparecerão aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 3: SKINS -->
+                <div id="tab-skins" class="tab-pane">
+                    <div class="feature-box">
+                        <div class="skins-header">
+                            <h3>🖼️ Fundo de Perfil</h3>
+                            <button id="btn-back-champs" class="premium-btn hidden"
+                                style="padding: 5px 10px; font-size: 0.8rem;">⬅ Voltar</button>
+                        </div>
+
+                        <input type="text" id="champ-search" placeholder="Buscar Campeão..." class="premium-input"
+                            style="margin-bottom: 10px;">
+
+                        <!-- Grid de Campeões -->
+                        <div id="champion-grid" class="champion-grid">
+                            <p style="text-align:center; color:#888;">Carregando Campeões...</p>
+                        </div>
+
+                        <!-- Grid de Skins (Escondido inicialmente) -->
+                        <div id="skin-grid" class="skin-grid-container hidden"></div>
+
+                        <div id="skin-actions" class="hidden"
+                            style="margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
+                            <button id="btn-set-skin" class="premium-btn full-width" disabled>Definir Fundo
+                                Selecionado</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 4: ELO (NOVA) -->
+                <div id="tab-elo" class="tab-pane">
+                    <div class="feature-box">
+                        <h3>🏆 Elo e Status</h3>
+                        <div class="control-group">
+                            <label>Alterar Borda/Regalia</label>
+                            <select id="elo-select" class="premium-select">
+                                <option value="IRON">Ferro</option>
+                                <option value="BRONZE">Bronze</option>
+                                <option value="SILVER">Prata</option>
+                                <option value="GOLD">Ouro</option>
+                                <option value="PLATINUM">Platina</option>
+                                <option value="EMERALD">Esmeralda</option>
+                                <option value="DIAMOND">Diamante</option>
+                                <option value="MASTER">Mestre</option>
+                                <option value="GRANDMASTER">Grão-Mestre</option>
+                                <option value="CHALLENGER">Desafiante</option>
+                            </select>
+                            <button id="btn-set-elo" class="premium-btn full-width" style="margin-top: 10px;">Aplicar
+                                Borda</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <nav class="tab-menu bottom-nav">
+                <button class="tab-btn active" data-tab="tab-profile">👤 Perfil</button>
+                <button class="tab-btn" data-tab="tab-icons">🎭 Ícones</button>
+                <button class="tab-btn" data-tab="tab-skins">🖼️ Skins</button>
+                <button class="tab-btn" data-tab="tab-elo">🏆 Elo</button>
+            </nav>
+
+            <div class="footer" style="display:none;"></div> <!-- Footer oculto pois ocupa espaço do menu -->
+        </div>
+    </div>
+
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>
