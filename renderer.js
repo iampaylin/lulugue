@@ -7,6 +7,7 @@ const elements = {
     // Perfil
     statusBox: document.getElementById('status-container'),
     statusText: document.getElementById('status-text'),
+    btnManualLocate: document.getElementById('btn-manual-locate'),
     profileCard: document.getElementById('profile-card'),
     profileCover: document.getElementById('profile-cover'),
     profileIcon: document.getElementById('profile-icon'),
@@ -105,8 +106,26 @@ function setConnected(isOnline) {
         elements.statusBox.className = isOnline ? 'status-box connected' : 'status-box disconnected';
         elements.statusText.textContent = isOnline ? 'Conectado ao League Client' : 'Aguardando League Client...';
         elements.statusText.style.color = isOnline ? '#4cd964' : '#ffffff';
+
+        if (elements.btnManualLocate) {
+            if (isOnline) {
+                elements.btnManualLocate.classList.add('hidden');
+            } else {
+                elements.btnManualLocate.classList.remove('hidden');
+            }
+        }
     }
     if (elements.profileCard && isOnline) elements.profileCard.classList.remove('hidden');
+}
+
+// === Manual Locate Handler ===
+if (elements.btnManualLocate) {
+    elements.btnManualLocate.addEventListener('click', async () => {
+        const result = await window.api.selectLolFolder();
+        if (result) {
+            logUI(result ? "Pasta selecionada!" : "Seleção cancelada.");
+        }
+    });
 }
 
 // === 1. Dados do Invocador ===

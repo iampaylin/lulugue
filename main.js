@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
 const https = require('https');
@@ -12,6 +12,7 @@ const agent = new https.Agent({
 
 let mainWindow;
 let lcuCredentials = null;
+let manualLolPath = null;
 
 // === AUTO UPDATER ===
 const { autoUpdater } = require('electron-updater');
@@ -98,12 +99,17 @@ const getFromWMIC = () => {
 };
 
 // Estratégia 3: Lockfile (Padrão de Instalação)
-const getFromLockfile = () => {
+// Estratégia 3: Lockfile (Padrão de Instalação + Manual)
+const getFromLockfile = (customPath = null) => {
     return new Promise((resolve) => {
-        const potentialArray = [
+        let potentialArray = [
             'C:\\Riot Games\\League of Legends\\lockfile',
             'D:\\Riot Games\\League of Legends\\lockfile'
         ];
+
+        if (customPath) {
+            potentialArray = [path.join(customPath, 'lockfile')];
+        }
 
         for (const path of potentialArray) {
             if (fs.existsSync(path)) {
@@ -137,7 +143,7 @@ const getLCUCredentials = async () => {
     if (creds) return creds;
 
     // console.log('WMIC falhou, checando pasta padrão...');
-    creds = await getFromLockfile();
+    creds = await getFromLockfile(manualLolPath);
 
     return creds;
 };
@@ -255,6 +261,35 @@ ipcMain.handle('external-request', async (event, url, isBinary = false) => {
     } catch (e) {
         console.error("[Proxy] Handler Error:", e);
         throw e;
+    }
+});
+
+// Handler para selecionar pasta do LoL manualmente
+ipcMain.handle('select-lol-folder', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openDirectory'],
+        title: 'Selecione a pasta do League of Legends'
+    });
+
+    if (result.canceled || result.filePaths.length === 0) return null;
+
+    const selectedPath = result.filePaths[0];
+    console.log("Pasta selecionada:", selectedPath);
+
+    // Tentar ler lockfile dessa pasta imediatamente
+    const creds = await getFromLockfile(selectedPath);
+
+    if (creds) {
+        manualLolPath = selectedPath; // Salvar para o loop
+        lcuCredentials = creds;
+        console.log('LCU Conectado via Manual Path:', creds.url);
+        mainWindow.webContents.send('lcu-connected', true);
+        return true; // Sucesso
+    } else {
+        // Se falhar, talvez o jogo esteja fechado. Salvar o path mesmo assim para tentar depois?
+        // Sim, vamos salvar.
+        manualLolPath = selectedPath;
+        return false; // Path salvo, mas ainda não conectado (jogo fechado?)
     }
 });
 

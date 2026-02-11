@@ -45,6 +45,8 @@ body {
     margin-bottom: 20px;
     transition: all 0.3s ease;
     border: 1px solid transparent;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .status-box.disconnected {
@@ -69,6 +71,12 @@ body {
 .status-box.connected .status-indicator {
     background-color: var(--success-color);
     box-shadow: 0 0 10px var(--success-color);
+}
+
+.status-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Profile Card */
@@ -293,6 +301,14 @@ body {
     cursor: pointer;
     transition: filter 0.2s ease;
     margin-top: 20px;
+}
+
+#btn-manual-locate {
+    /* Default display handled by class toggle */
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    margin-top: 0;
+    /* Override premium-btn margin */
 }
 
 .premium-btn:hover {
